@@ -14,7 +14,8 @@ echo Installing the Spotify deb
 cd $HOME
 curl -sS https://download.spotify.com/debian/pubkey_0D811D58.gpg | sudo apt-key add - 
 echo "deb http://repository.spotify.com stable non-free" | sudo tee /etc/apt/sources.list.d/spotify.list
-sudo apt-get update && sudo apt-get install spotify-client
+sudo apt-get update && sudo apt-get install spotify-client coreutils
+timeout 1s spotify
 read -p "Press return to continue..."
 clear
 
@@ -29,16 +30,18 @@ clear
 echo Installing and setting up Spicetify
 curl -fsSL https://raw.githubusercontent.com/khanhas/spicetify-cli/master/install.sh | sh
 ./spicetify-cli/spicetify config prefs_path $HOME/.config/spotify/prefs
-./spicetify-cli/spicetify -n -q backup
+./spicetify-cli/spicetify -n backup
 ./spicetify-cli/spicetify -n apply
 read -p "Press return to continue..."
 clear
 
 #add shortcut alias to spicetify
 echo Adding alias to spicetify
-echo -e alias spotify-themes=\"ls $HOME/.config/spicetify/Themes\" >> $HOME/.bash_aliases
-echo -e alias spicetify=\"$HOME/spicetify-cli/spicetify\"
-echo -e "alias set-spt-theme='spotify-themes && read -p \"Enter the chosen theme: \" THEME && spicetify config current_theme $THEME && spicetify apply'" >> $HOME/.bash_aliases
+echo -e "alias spotify-themes=\"ls $HOME/.config/spicetify/Themes\"" >> $HOME/.bash_aliases
+echo -e "alias spicetify=\"$HOME/spicetify-cli/spicetify\"" >> $HOME/.bashrc
+echo -e "alias set-theme=\"spicetify config current_theme\"" >> $HOME/.bashrc
+echo -e "alias apply=\"spicetify apply\"" >> $HOME/.bashrc
+source $HOME/.bashrc
 read -p "Done, press return to continue..."
 clear
 
@@ -59,9 +62,13 @@ clear
 echo
 echo Listing all important commands :
 echo spotify-themes : lists all the Spotify themes
-echo set-spt-theme : lists all the themes, lets you choose and sets it up
+echo set-theme : lists all the themes, lets you choose and sets it up
+echo apply : applies the selected theme and restarts Spotify
+echo spicetify : use this command to access spicetify directly!
 echo
 source ~/.bashrc
 echo Enjoy your spicetify!
 
-
+#delete this folder
+cd $HOME
+rm -rf spt-script
